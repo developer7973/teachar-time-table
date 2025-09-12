@@ -8,3 +8,7 @@
 body{
   background-color: black;
 }
+.active{
+  background-color:#12BBB6 ;
+  color: white;
+}
