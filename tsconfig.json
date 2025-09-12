@@ -22,5 +22,10 @@
   },
   "include": [
     "src"
-  ]
+  ],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "jsx": "react-jsx"
 }
