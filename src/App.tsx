@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Home from './pages/Home';
+import Tables from './pages/Tables';
 import Dashboard from './pages/Dashboard';
 import Header from './components/common/Header';
 import Animated from './components/common/Animated';
@@ -12,8 +12,8 @@ function App() {
       <Animated/>
       <Header/>
       <Routes>
-        <Route path='/' element={<Home/>}/> 
-        <Route path='/dashboard' element={<Dashboard/>}/> 
+        <Route path='/' element={<Dashboard/>}/> 
+        <Route path='/tables' element={<Tables/>}/> 
       </Routes>
       </BrowserRouter>
     </>

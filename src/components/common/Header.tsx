@@ -9,8 +9,8 @@ function Header() {
     });
 
     const value = [
-        { title: "Home", path: "/" },
-        { title: "Dashboard", path: "/dashboard" },
+        { title: "Dashboard", path: "/" },
+        { title: "Tables", path: "/tables" },
        
     ];
 

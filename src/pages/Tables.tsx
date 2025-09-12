@@ -123,7 +123,7 @@ const schedule = [
 
 const classHeaders = ["10A","10B","10C","10D","10E","10F","10G","10H"];
 
-const Home: React.FC = () => {
+const Tables: React.FC = () => {
   const initialAttendance: { [cls: string]: { [period: string]: boolean } } = {};
   classHeaders.forEach(cls => {
     initialAttendance[cls] = {};
@@ -225,4 +225,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Tables;
