@@ -8,6 +8,7 @@ import supabase from "../config/createClient";
 import CreateTeacherModal from "../components/model/CreateTeacherModal";
 import CreateSubjectButton from "../components/model/CreateSubjectButton";
 import { useEditMod } from "../Context/EditModProvider";
+import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
   const { editMod } = useEditMod();
@@ -45,37 +46,12 @@ const AdminDashboard = () => {
       console.error("Error fetching teachers:", error);
       return;
     }
+
     setTeachers(data);
   };
 
-  // ✅ Notification
-  const showNotification = (message: any, type = "info") => {
-    setNotification({ message, type });
-  };
-
-  const closeNotification = () => {
-    setNotification(null);
-  };
-
   // ✅ Create Subject (Supabase)
-  const createSubject = async () => {
-    const name = prompt("Enter subject name:");
-    if (!name) return;
 
-    const { data, error } = await supabase
-      .from("Subjects")
-      .insert([{ name }])
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error creating subject:", error);
-      showNotification("Failed to create subject!", "error");
-    } else {
-      setSubjects([...subjects, data]);
-      showNotification(`Subject "${name}" created successfully!`, "success");
-    }
-  };
   // ✅ Actual create function (called from modal)
   const handleCreateTeacher = async (name: string, subjectId: string) => {
     const { data, error } = await supabase
@@ -85,10 +61,10 @@ const AdminDashboard = () => {
       .single();
 
     if (error) {
-      showNotification("Failed to create teacher!", "error");
+      toast.error("Failed to create teacher!");
+      console.error(error);
     } else {
       setTeachers([...teachers, data]);
-      showNotification(`Teacher "${name}" created successfully!`, "success");
     }
   };
 

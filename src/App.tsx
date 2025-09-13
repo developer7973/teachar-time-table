@@ -5,14 +5,10 @@ import Dashboard from "./pages/Dashboard";
 import Header from "./components/common/Header";
 import Animated from "./components/common/Animated";
 import { Toaster } from "react-hot-toast";
-import { useTheme } from "./Context/ThemeProvider";
-import { useEditMod } from "./Context/EditModProvider";
-import { Switch } from "./components/ui/switch";
-import Cookies from "js-cookie";
 import FloatingSwitch from "./components/ui/FloatingSwitch";
-
+import Cookies from "js-cookie";
 function App() {
-  const { editMod, setEditMod } = useEditMod();
+  const isVerified = Cookies.get("passwordVerified");
 
   return (
     <>
@@ -33,7 +29,7 @@ function App() {
             },
           }}
         />
-        <FloatingSwitch />
+        {isVerified === "true" && <FloatingSwitch />}
       </BrowserRouter>
     </>
   );

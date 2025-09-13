@@ -4,9 +4,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Theme from "../ui/Themebutton";
 import { useTheme } from "../../Context/ThemeProvider";
-import { Menu, X } from "lucide-react";
-
+import { Lock, Menu, X } from "lucide-react";
+import PasswordVerifyDialog from "../model/PasswordVerifyDialog";
+import Cookies from "js-cookie";
 function Header() {
+  const isVerified = Cookies.get("passwordVerified");
   const { theme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -48,15 +50,19 @@ function Header() {
             </NavLink>
           ))}
           <Theme />
+          {isVerified !== "true" && <PasswordVerifyDialog />}
         </div>
 
         {/* Mobile Hamburger */}
-        <button
-          className="md:hidden text-white p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            className="md:hidden text-white p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+          {isVerified !== "true" && <PasswordVerifyDialog />}
+        </div>
       </div>
 
       {/* Mobile Menu Drawer */}

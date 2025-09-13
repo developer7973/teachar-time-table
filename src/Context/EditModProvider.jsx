@@ -10,6 +10,13 @@ export const EditModProvider = ({ children }) => {
   useEffect(() => {
     const cookieVal = Cookies.get("editMod");
     setEditMod(cookieVal === "true" ? true : false);
+
+    const isVerified = Cookies.get("passwordVerified");
+    if (isVerified === "true") {
+      setEditMod(true);
+    } else {
+      setEditMod(false);
+    }
   }, []);
 
   return (
