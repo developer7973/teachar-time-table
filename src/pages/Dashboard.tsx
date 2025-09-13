@@ -134,7 +134,7 @@ const AdminDashboard = () => {
                   className="bg-customTeal px-6 py-3 rounded-lg font-semibold hover:bg-customTeal transition-all duration-300 shadow-lg shadow-customTeal/30 hover:shadow-customTeal/50 hover:scale-105"
                   onClick={() => setShowCreateTeacherModal(true)}
                 >
-                  Create Teacher
+                  Add Teacher
                 </button>
               )}
             </div>
