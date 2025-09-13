@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import supabase from "../config/createClient";
 import PeriodEditor from "../components/model/PeriodEditor";
 import CircleLoading from "../components/ui/CircleLoading";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import * as XLSX from "xlsx";
 const Tables: React.FC = () => {
   const [mainLoading, setMainLoading] = useState(true);
   const [teachers, setTeachers] = useState<any[]>([]);
