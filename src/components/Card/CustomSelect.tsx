@@ -166,7 +166,7 @@ const CustomSelect = ({
 
       {/* Dropdown */}
       {open && (
-        <div className={`absolute z-[99999] ${positionClasses} max-md:top-full max-md:mt-2 max-md:left-0 max-md:w-full`}>
+        <div className={`absolute z-[99999] ${positionClasses} max-md:top-full max-md:mt-2 max-md:left-0 w-full`}>
           <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden">
             {/* Search */}
             <div className="p-2 border-b border-gray-800">
