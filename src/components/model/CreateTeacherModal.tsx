@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CustomSelect from "../Card/CustomSelect";
+import toast from "react-hot-toast";
 
 interface CreateTeacherModalProps {
   subjects: any[];
@@ -17,7 +18,7 @@ const CreateTeacherModal = ({
 
   const handleCreate = () => {
     if (!name || !subjectId) {
-      alert("Please enter name and select subject.");
+      toast.error("Please enter name and select subject.");
       return;
     }
     onCreate(name, subjectId);

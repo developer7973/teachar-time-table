@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import supabase from "../../config/createClient";
 import CircleLoading from "../ui/CircleLoading";
 import EditIcon from "../Card/EditIcon";
-import { Check } from "lucide-react";
+import { BookOpen, Check, User } from "lucide-react";
 import Notification from "../Card/Notification";
 import { useTheme } from "../../Context/ThemeProvider";
 import Cookies from "js-cookie";
@@ -196,8 +196,20 @@ function PeriodEditor({
             >
               {/* Left Side: Subject - Teacher */}
               <div className="font-semibold truncate flex flex-col gap-1 items-start">
-                {row?.key?.split("-")?.map((i?: any) => (
-                  <span>{i}</span>
+                {row?.key?.split("-")?.map((i?: any, idx?: number) => (
+                  <span
+                    className="flex items-center gap-1 justify-start"
+                    key={idx}
+                  >
+                    {idx == 0 ? (
+                      <BookOpen size={14} />
+                    ) : idx == 1 ? (
+                      <User size={14} />
+                    ) : (
+                      ""
+                    )}
+                    {i}
+                  </span>
                 ))}
               </div>
 

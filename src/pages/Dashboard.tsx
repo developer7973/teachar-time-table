@@ -9,6 +9,7 @@ import CreateTeacherModal from "../components/model/CreateTeacherModal";
 import CreateSubjectButton from "../components/model/CreateSubjectButton";
 import { useEditMod } from "../Context/EditModProvider";
 import toast from "react-hot-toast";
+import { useTheme } from "../Context/ThemeProvider";
 
 const AdminDashboard = () => {
   const { editMod } = useEditMod();
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
     once: false,
     offset: 0,
   });
+  const { theme } = useTheme();
 
   const [teachers, setTeachers] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
@@ -55,11 +57,11 @@ const AdminDashboard = () => {
   // ✅ Actual create function (called from modal)
   const handleCreateTeacher = async (name: string, subjectId: string) => {
     const { data, error } = await supabase
-      .from("teacher")
+      .from("Teachers")
       .insert([{ name, subject_id: subjectId }])
       .select("id, name, subject_id, subject:subject_id(name)")
       .single();
-
+    toast.success("Teacher created successfully!");
     if (error) {
       toast.error("Failed to create teacher!");
       console.error(error);
@@ -80,13 +82,23 @@ const AdminDashboard = () => {
           >
             Admin Dashboard
           </h1>
-          <p
-            data-aos="fade-right"
-            data-aos-delay="400"
-            className="text-gray-400"
-          >
-            Manage teachers and subjects
-          </p>
+          <div data-aos="fade-right" data-aos-delay="400">
+            <p className={theme ? "text-gray-700" : "text-gray-400"}>
+              Manage teachers and subjects
+            </p>
+            <p
+              className={`text-sm ${
+                theme ? "text-gray-700" : "text-gray-400"
+              } text-left `}
+            >
+              <b>Note: </b>If you face any issue where the data does not update
+              even after making changes, please{" "}
+              <span className="font-semibold">refresh or reload the page</span>{" "}
+              to ensure everything is properly set. If the problem still
+              persists, kindly{" "}
+              <span className="font-semibold">contact the developer</span>.
+            </p>
+          </div>
         </div>
 
         {/* Main Grid Layout */}
