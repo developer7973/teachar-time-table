@@ -6,15 +6,18 @@ import supabase from "../../config/createClient";
 import toast from "react-hot-toast";
 import EditIcon from "./EditIcon";
 import DeleteIcon from "./DeleteIcon";
+import { useEditMod } from "../../Context/EditModProvider";
 
 const SubjectCard = ({ subject, index }: any) => {
+  const { editMod } = useEditMod();
+
   const [subjectData, setSubjectData] = useState(subject);
   const [editName, setEditName] = useState(subject.name);
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
-  const delay = 1400 + index * 200;
+  const delay = 500 + index * 100;
 
   // ✅ Update Subject
   const handleUpdate = async () => {
@@ -70,8 +73,6 @@ const SubjectCard = ({ subject, index }: any) => {
     <>
       {/* Subject Card */}
       <div
-        data-aos="fade-up"
-        data-aos-delay={delay}
         className="bg-gray-800 p-6 rounded-xl border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10"
       >
         <div className="flex items-center justify-between">
@@ -84,9 +85,11 @@ const SubjectCard = ({ subject, index }: any) => {
             {/* Edit Dialog Trigger */}
             <Dialog.Root open={editOpen} onOpenChange={setEditOpen}>
               <Dialog.Trigger asChild>
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 transition-all duration-200">
-                  <EditIcon />
-                </button>
+                {editMod && (
+                  <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 transition-all duration-200">
+                    <EditIcon />
+                  </button>
+                )}
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" />
@@ -131,9 +134,11 @@ const SubjectCard = ({ subject, index }: any) => {
             {/* Delete Dialog Trigger */}
             <Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
               <Dialog.Trigger asChild>
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-900 hover:text-red-400 transition-all duration-200">
-                  <DeleteIcon />
-                </button>
+                {editMod && (
+                  <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-900 hover:text-red-400 transition-all duration-200">
+                    <DeleteIcon />
+                  </button>
+                )}
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" />

@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import supabase from "../../config/createClient";
 import * as Dialog from "@radix-ui/react-dialog";
+import { useEditMod } from "../../Context/EditModProvider";
 interface CreateSubjectButtonProps {
   onSubjectCreated: (newSubject: any) => void;
 }
@@ -9,6 +10,8 @@ interface CreateSubjectButtonProps {
 const CreateSubjectButton = ({
   onSubjectCreated,
 }: CreateSubjectButtonProps) => {
+  const { editMod } = useEditMod();
+
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,14 +45,15 @@ const CreateSubjectButton = ({
 
   return (
     <>
-
       {/* Popup Modal */}
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
         {/* Trigger Button */}
         <Dialog.Trigger asChild>
-          <button className="bg-customTeal px-6 py-3 rounded-lg font-semibold hover:bg-customTeal transition-all duration-300 shadow-lg shadow-customTeal/30 hover:shadow-customTeal/50 hover:scale-105">
-            Create Subject
-          </button>
+          {editMod && (
+            <button className="bg-customTeal px-6 py-3 rounded-lg font-semibold hover:bg-customTeal transition-all duration-300 shadow-lg shadow-customTeal/30 hover:shadow-customTeal/50 hover:scale-105">
+              Create Subject
+            </button>
+          )}
         </Dialog.Trigger>
 
         {/* Portal & Overlay */}

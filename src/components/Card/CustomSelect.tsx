@@ -13,6 +13,15 @@ interface CustomSelectProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  position?:
+    | "bottom"
+    | "top"
+    | "left"
+    | "right"
+    | "left-top"
+    | "left-bottom"
+    | "right-top"
+    | "right-bottom"; // dropdown position
 }
 
 const CustomSelect = ({
@@ -22,6 +31,7 @@ const CustomSelect = ({
   placeholder = "Select...",
   className = "",
   disabled = false,
+  position = "bottom",
 }: CustomSelectProps) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -76,7 +86,36 @@ const CustomSelect = ({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, filtered, highlightIndex, onChange]);
+  let positionClasses = "";
 
+  switch (position) {
+    case "top":
+      positionClasses = "bottom-full mb-2 left-0";
+      break;
+    case "bottom":
+      positionClasses = "top-full mt-2 left-0";
+      break;
+    case "left":
+      positionClasses = "right-full mr-2 top-1/2 -translate-y-1/2";
+      break;
+    case "right":
+      positionClasses = "left-full ml-2 top-1/2 -translate-y-1/2";
+      break;
+    case "left-top":
+      positionClasses = "right-full mr-2 top-0";
+      break;
+    case "left-bottom":
+      positionClasses = "right-full mr-2 bottom-0";
+      break;
+    case "right-top":
+      positionClasses = "left-full ml-2 top-0";
+      break;
+    case "right-bottom":
+      positionClasses = "left-full ml-2 bottom-0";
+      break;
+    default:
+      positionClasses = "top-full mt-2 left-0";
+  }
   return (
     <div ref={rootRef} className={`relative ${className}`}>
       {/* Trigger */}
@@ -127,7 +166,7 @@ const CustomSelect = ({
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute mt-2 left-0 right-0 z-[1000]">
+        <div className={`absolute z-[99999] ${positionClasses} w-full`}>
           <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden">
             {/* Search */}
             <div className="p-2 border-b border-gray-800">

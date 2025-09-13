@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import supabase from "../config/createClient";
 import PeriodEditor from "../components/model/PeriodEditor";
 import CircleLoading from "../components/ui/CircleLoading";
+import { useTheme } from "../Context/ThemeProvider";
 const Tables: React.FC = () => {
+  const { theme } = useTheme();
+
   const [mainLoading, setMainLoading] = useState(true);
   const [teachers, setTeachers] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
@@ -58,7 +61,7 @@ const Tables: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen p-6   text-white font-poppins flex flex-col items-center">
+    <div className=" p-6   text-white font-poppins flex flex-col items-center">
       <div className="w-full max-w-full  rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-[#12BBB6]/50 scrollbar-track-gray-900">
           <table
@@ -66,7 +69,7 @@ const Tables: React.FC = () => {
             className="min-w-full table-auto border-collapse border border-gray-700"
           >
             {/* Table Header */}
-            <thead className="bg-[#12BBB6] sticky top-0 z-10">
+            <thead className="bg-[#12BBB6] sticky top-0 z-10 ">
               <tr>
                 <th className="px-2 py-3 text-center font-semibold uppercase tracking-wide border-r border-[#0c8a91]">
                   Class
@@ -86,13 +89,19 @@ const Tables: React.FC = () => {
 
             {/* Table Body */}
             <tbody>
-              {classes?.map((cls, idx) => (
+              {classes?.map((cls: any, idx) => (
                 <tr
                   key={idx}
                   className={`border-b border-gray-700  transition-colors duration-300 bg-transparent`}
                 >
                   {/* Class Column */}
-                  <td className="px-2 py-4  bg-white/10 backdrop-blur-sm font-medium text-left text-white border-r border-gray-600">
+                  <td
+                    className={`px-2 py-4 ${
+                      theme
+                        ? "text-white bg-customTeal "
+                        : "bg-white/10 backdrop-blur-sm text-white"
+                    }  font-medium text-left  border-r border-gray-600`}
+                  >
                     {cls?.name}
                   </td>
                   {[1, 2, 3, 4, 5, 6, 7, 8]?.map(
@@ -113,7 +122,7 @@ const Tables: React.FC = () => {
         </div>
       </div>
       {mainLoading && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[9999]">
           <CircleLoading />
         </div>
       )}

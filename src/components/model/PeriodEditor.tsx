@@ -7,6 +7,9 @@ import CircleLoading from "../ui/CircleLoading";
 import EditIcon from "../Card/EditIcon";
 import { Check } from "lucide-react";
 import Notification from "../Card/Notification";
+import { useTheme } from "../../Context/ThemeProvider";
+import Cookies from "js-cookie";
+import { useEditMod } from "../../Context/EditModProvider";
 
 interface PeriodEditorProps {
   period: number;
@@ -24,7 +27,6 @@ const days = [
   "Friday",
   "Saturday",
 ];
-
 function PeriodEditor({
   period,
   clsData,
@@ -32,6 +34,9 @@ function PeriodEditor({
   subjects,
   periodDataID,
 }: PeriodEditorProps) {
+  const { theme } = useTheme();
+  const { editMod } = useEditMod();
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [MainData, setMainData] = useState<any>([]);
@@ -185,7 +190,9 @@ function PeriodEditor({
           {displayRows.map((row) => (
             <div
               key={row.key}
-              className="flex justify-between items-center text-xs sm:text-sm bg-gray-800/50 rounded-lg px-2 py-1 whitespace-nowrap overflow-hidden text-ellipsis"
+              className={`flex justify-between items-center text-xs sm:text-sm ${
+                theme ? "bg-white/40 text-black" : "bg-gray-800/50 text-white"
+              }  rounded-lg px-2 py-1 whitespace-nowrap overflow-hidden text-ellipsis `}
             >
               {/* Left Side: Subject - Teacher */}
               <div className="font-semibold truncate flex flex-col gap-1 items-start">
@@ -195,28 +202,36 @@ function PeriodEditor({
               </div>
 
               {/* Right Side: Days */}
-              <span className="text-gray-400 truncate">{row.days}</span>
+              <span
+                className={`${
+                  theme ? " text-gray-600" : "text-gray-400"
+                } truncate`}
+              >
+                {row.days}
+              </span>
             </div>
           ))}
         </div>
       ) : (
         <div className="text-gray-500 text-xs text-center">No Data</div>
       )}
-      <div className="absolute opacity-0 z-0 group-hover:opacity-100 group-hover:z-20 top-0 left-0 w-full h-full flex  transition-all gap-2 duration-200 items-center justify-center backdrop-blur-sm">
-        <button
-          onClick={() => {
-            setOpen(true);
-          }}
-          className="p-2    rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 hover:scale-110 transition-all duration-200"
-        >
-          <EditIcon />
-        </button>
-        {MainData?.length == 6 && (
-          <div className="absolute bottom-2 right-2 text-green-500">
-            <Check size={24} />
-          </div>
-        )}
-      </div>
+      {editMod && (
+        <div className="absolute opacity-0 z-0 group-hover:opacity-100 group-hover:z-20 top-0 left-0 w-full h-full flex  transition-all gap-2 duration-200 items-center justify-center backdrop-blur-sm">
+          <button
+            onClick={() => {
+              setOpen(true);
+            }}
+            className="p-2    rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 hover:scale-110 transition-all duration-200"
+          >
+            <EditIcon />
+          </button>
+          {MainData?.length == 6 && (
+            <div className="absolute bottom-2 right-2 text-green-500">
+              <Check size={24} />
+            </div>
+          )}
+        </div>
+      )}
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 data-[state=open]:animate-fadeIn" />
@@ -225,7 +240,7 @@ function PeriodEditor({
               Edit Schedule - {clsData?.name} ({period})
             </Dialog.Title>
 
-            <div className="space-y-4 mt-6 max-h-[65vh] overflow-auto scrollbar-thin scrollbar-thumb-gray-700">
+            <div className="space-y-4 mt-6 max-h-[65vh] overflow-auto scrollbar-thin scrollbar-hide">
               {days.map((day, index) => (
                 <div
                   key={day}
@@ -242,6 +257,15 @@ function PeriodEditor({
                         label: t.name,
                       }))}
                       placeholder="Select Teacher"
+                      position={
+                        index > 3
+                          ? "top"
+                          : index > 2
+                          ? "right"
+                          : index > 1
+                          ? "right"
+                          : "bottom"
+                      }
                     />
                   </div>
 
@@ -254,6 +278,15 @@ function PeriodEditor({
                         label: s.name,
                       }))}
                       placeholder="Select Subject"
+                      position={
+                        index > 3
+                          ? "top"
+                          : index > 2
+                          ? "left"
+                          : index > 1
+                          ? "left"
+                          : "bottom"
+                      }
                     />
                   </div>
                 </div>

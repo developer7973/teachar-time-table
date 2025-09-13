@@ -7,8 +7,11 @@ import "aos/dist/aos.css";
 import supabase from "../config/createClient";
 import CreateTeacherModal from "../components/model/CreateTeacherModal";
 import CreateSubjectButton from "../components/model/CreateSubjectButton";
+import { useEditMod } from "../Context/EditModProvider";
 
 const AdminDashboard = () => {
+  const { editMod } = useEditMod();
+
   AOS.init({
     duration: 1200,
     once: false,
@@ -89,52 +92,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // ✅ Delete Subject
-  const deleteSubject = async (name: string) => {
-    const subject = subjects.find((s) => s.name === name);
-    if (!subject) return;
-
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      const { error } = await supabase
-        .from("Subjects")
-        .delete()
-        .eq("id", subject.id);
-
-      if (error) {
-        console.error("Error deleting subject:", error);
-        showNotification("Failed to delete subject!", "error");
-      } else {
-        setSubjects(subjects.filter((s) => s.id !== subject.id));
-        showNotification(`${name} deleted successfully!`, "success");
-      }
-    }
-  };
-
-  // ✅ Delete Teacher
-  const deleteTeacher = async (name: string) => {
-    const teacher = teachers.find((t) => t.name === name);
-    if (!teacher) return;
-
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      const { error } = await supabase
-        .from("Teachers")
-        .delete()
-        .eq("id", teacher.id);
-
-      if (error) {
-        console.error("Error deleting teacher:", error);
-        showNotification("Failed to delete teacher!", "error");
-      } else {
-        setTeachers(teachers.filter((t) => t.id !== teacher.id));
-        showNotification(`${name} deleted successfully!`, "success");
-      }
-    }
-  };
-
-  const editSubject = (name: string) => {
-    showNotification(`Editing ${name}...`, "info");
-  };
-
   return (
     <div className="mt-[30px] min-h-screen text-white font-sans">
       <div className="container mx-auto px-6 py-8">
@@ -172,12 +129,14 @@ const AdminDashboard = () => {
               >
                 Teachers
               </h2>
-              <button
-                className="bg-customTeal px-6 py-3 rounded-lg font-semibold hover:bg-customTeal transition-all duration-300 shadow-lg shadow-customTeal/30 hover:shadow-customTeal/50 hover:scale-105"
-                onClick={() => setShowCreateTeacherModal(true)}
-              >
-                Create Teacher
-              </button>
+              {editMod && (
+                <button
+                  className="bg-customTeal px-6 py-3 rounded-lg font-semibold hover:bg-customTeal transition-all duration-300 shadow-lg shadow-customTeal/30 hover:shadow-customTeal/50 hover:scale-105"
+                  onClick={() => setShowCreateTeacherModal(true)}
+                >
+                  Create Teacher
+                </button>
+              )}
             </div>
 
             <div className="space-y-6">
@@ -196,7 +155,7 @@ const AdminDashboard = () => {
           <div
             data-aos="fade-left"
             data-aos-delay="800"
-            className="space-y-6  backdrop-blur-sm bg-x-900/20 p-6 rounded-2xl border border-gray-700/50"
+            className="space-y-6 overflow-hidden backdrop-blur-sm bg-gray-900/20 p-6 rounded-2xl border border-gray-700/50"
           >
             <div className="flex items-center justify-between">
               <h2
@@ -215,11 +174,7 @@ const AdminDashboard = () => {
 
             <div className="space-y-6">
               {subjects.map((subject, index) => (
-                <SubjectCard
-                  key={subject.id}
-                  subject={subject}
-                  index={index}
-                />
+                <SubjectCard key={subject.id} subject={subject} index={index} />
               ))}
             </div>
           </div>
@@ -230,14 +185,6 @@ const AdminDashboard = () => {
             subjects={subjects}
             onClose={() => setShowCreateTeacherModal(false)}
             onCreate={handleCreateTeacher}
-          />
-        )}
-        {/* Notification */}
-        {notification && (
-          <Notification
-            message={notification.message}
-            type={notification.type}
-            onClose={closeNotification}
           />
         )}
       </div>

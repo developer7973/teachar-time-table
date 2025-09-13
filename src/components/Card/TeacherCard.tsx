@@ -7,6 +7,7 @@ import EditIcon from "./EditIcon";
 import DeleteIcon from "./DeleteIcon";
 import supabase from "../../config/createClient";
 import CustomSelect from "./CustomSelect";
+import { useEditMod } from "../../Context/EditModProvider";
 
 interface TeacherCardProps {
   teacher: any;
@@ -15,6 +16,8 @@ interface TeacherCardProps {
 }
 
 const TeacherCard = ({ teacher, subjects, index }: TeacherCardProps) => {
+  const { editMod } = useEditMod();
+
   const [teacherData, setTeacherData] = useState(teacher);
   const [editName, setEditName] = useState(teacher.name);
   const [editSubjectId, setEditSubjectId] = useState(teacher.subject_id || "");
@@ -30,7 +33,7 @@ const TeacherCard = ({ teacher, subjects, index }: TeacherCardProps) => {
     });
   }, []);
 
-  const delay = 1400 + index * 200;
+  const delay = 500 + index * 100;
 
   // ✅ Handle Teacher Update
   const handleUpdate = async () => {
@@ -91,9 +94,7 @@ const TeacherCard = ({ teacher, subjects, index }: TeacherCardProps) => {
     <div>
       {/* Teacher Card */}
       <div
-        data-aos="fade-up"
-        data-aos-delay={delay}
-        className="bg-gray-800 p-6 rounded-xl border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10 hover:scale-105"
+        className="bg-gray-800 p-6 rounded-xl border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-400/10"
       >
         <div className="flex items-center justify-between">
           <div>
@@ -112,9 +113,11 @@ const TeacherCard = ({ teacher, subjects, index }: TeacherCardProps) => {
             {/* Edit Dialog */}
             <Dialog.Root open={editOpen} onOpenChange={setEditOpen}>
               <Dialog.Trigger asChild>
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 transition-all duration-200">
-                  <EditIcon />
-                </button>
+                {editMod && (
+                  <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 hover:text-cyan-400 transition-all duration-200">
+                    <EditIcon />
+                  </button>
+                )}
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" />
@@ -177,9 +180,11 @@ const TeacherCard = ({ teacher, subjects, index }: TeacherCardProps) => {
             {/* Delete Dialog */}
             <Dialog.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
               <Dialog.Trigger asChild>
-                <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-900 hover:text-red-400 transition-all duration-200">
-                  <DeleteIcon />
-                </button>
+                {editMod && (
+                  <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-900 hover:text-red-400 transition-all duration-200">
+                    <DeleteIcon />
+                  </button>
+                )}
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" />
