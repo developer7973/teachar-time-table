@@ -1,226 +1,125 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-
-const schedule = [
-  {
-    period: "1",
-    entries: [
-      { class: "10A", teacher: "SST 1-4" },
-      { class: "10B", teacher: "SHEENU" },
-      { class: "10C", teacher: "COM 5-6" },
-      { class: "10D", teacher: "RAJINDER" },
-      { class: "10E", teacher: "MATH 1-5" },
-      { class: "10F", teacher: "MAMTA" },
-      { class: "10G", teacher: "6TH ROT ENG" },
-      { class: "10H", teacher: "PAYAL" },
-    ],
-  },
-  {
-    period: "2",
-    entries: [
-      { class: "10A", teacher: "KANWALJIT" },
-      { class: "10B", teacher: "SCI 1-4,6" },
-      { class: "10C", teacher: "KANWALJIT" },
-      { class: "10D", teacher: "ENG 1,3,5-6" },
-      { class: "10E", teacher: "PAYAL" },
-      { class: "10F", teacher: "2ND ROT NSQF" },
-      { class: "10G", teacher: "PUSHPA" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "3",
-    entries: [
-      { class: "10A", teacher: "SHEENU" },
-      { class: "10B", teacher: "PBI 1-6" },
-      { class: "10C", teacher: "SUMAN" },
-      { class: "10D", teacher: "HIN 1-5" },
-      { class: "10E", teacher: "JP" },
-      { class: "10F", teacher: "6TH W/L" },
-      { class: "10G", teacher: "AASHISH" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "4",
-    entries: [
-      { class: "10A", teacher: "MATH 1-5" },
-      { class: "10B", teacher: "SCI 2-4" },
-      { class: "10C", teacher: "KANWALJIT" },
-      { class: "10D", teacher: "ENG 2-5" },
-      { class: "10E", teacher: "PAYAL" },
-      { class: "10F", teacher: "JP" },
-      { class: "10G", teacher: "PUSHPA" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "5",
-    entries: [
-      { class: "10A", teacher: "COM 1-2" },
-      { class: "10B", teacher: "SHEENU" },
-      { class: "10C", teacher: "SUMAN" },
-      { class: "10D", teacher: "HIN 1-4" },
-      { class: "10E", teacher: "JP" },
-      { class: "10F", teacher: "MAMTA" },
-      { class: "10G", teacher: "AASHISH" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "6",
-    entries: [
-      { class: "10A", teacher: "SST 2-4" },
-      { class: "10B", teacher: "KANWALJIT" },
-      { class: "10C", teacher: "COM 5-6" },
-      { class: "10D", teacher: "RAJINDER" },
-      { class: "10E", teacher: "MATH 1-3" },
-      { class: "10F", teacher: "MAMTA" },
-      { class: "10G", teacher: "6TH ROT ENG" },
-      { class: "10H", teacher: "PAYAL" },
-    ],
-  },
-  {
-    period: "7",
-    entries: [
-      { class: "10A", teacher: "KANWALJIT" },
-      { class: "10B", teacher: "SCI 2-5" },
-      { class: "10C", teacher: "SUMAN" },
-      { class: "10D", teacher: "HIN 1-5" },
-      { class: "10E", teacher: "JP" },
-      { class: "10F", teacher: "6TH W/L" },
-      { class: "10G", teacher: "AASHISH" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "8",
-    entries: [
-      { class: "10A", teacher: "SHEENU" },
-      { class: "10B", teacher: "PBI 1-6" },
-      { class: "10C", teacher: "SUMAN" },
-      { class: "10D", teacher: "HIN 1-5" },
-      { class: "10E", teacher: "JP" },
-      { class: "10F", teacher: "MAMTA" },
-      { class: "10G", teacher: "AASHISH" },
-      { class: "10H", teacher: "—" },
-    ],
-  },
-  {
-    period: "9",
-    entries: [
-      { class: "10A", teacher: "COM 1-6" },
-      { class: "10B", teacher: "SHEENU" },
-      { class: "10C", teacher: "KANWALJIT" },
-      { class: "10D", teacher: "RAJINDER" },
-      { class: "10E", teacher: "MATH 1-5" },
-      { class: "10F", teacher: "MAMTA" },
-      { class: "10G", teacher: "6TH ROT ENG" },
-      { class: "10H", teacher: "PAYAL" },
-    ],
-  },
-];
-
-const classHeaders = ["10A","10B","10C","10D","10E","10F","10G","10H"];
-
+import React, { useEffect, useState } from "react";
+import supabase from "../config/createClient";
+import PeriodEditor from "../components/model/PeriodEditor";
+import CircleLoading from "../components/ui/CircleLoading";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import * as XLSX from "xlsx";
 const Tables: React.FC = () => {
-  const initialAttendance: { [cls: string]: { [period: string]: boolean } } = {};
-  classHeaders.forEach(cls => {
-    initialAttendance[cls] = {};
-    schedule.forEach(p => {
-      initialAttendance[cls][p.period] = false;
-    });
-  });
-
-  const [attendance, setAttendance] = useState(initialAttendance);
-
-  const toggleAttendance = (cls: string, period: string) => {
-    setAttendance(prev => ({
-      ...prev,
-      [cls]: { ...prev[cls], [period]: !prev[cls][period] },
-    }));
+  const [mainLoading, setMainLoading] = useState(true);
+  const [teachers, setTeachers] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
+  const [classes, setClasses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    // ✅ 2 second ke baad loading hat jayegi
+    const timer = setTimeout(() => setMainLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+  const fetchSubjects = async () => {
+    const { data, error } = await supabase.from("Subjects").select("*");
+    if (error) {
+      console.error("Error fetching subjects:", error);
+      return;
+    }
+    setSubjects(data);
   };
+
+  const fetchTeachers = async () => {
+    const { data, error } = await supabase
+      .from("Teachers")
+      .select("id, name, subject_id, subject:subject_id(name)");
+    if (error) {
+      console.error("Error fetching teachers:", error);
+      return;
+    }
+    setTeachers(data);
+  };
+  useEffect(() => {
+    fetchSubjects();
+    fetchTeachers();
+  }, []);
+  useEffect(() => {
+    const fetchClasses = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("Classes")
+        .select("*")
+        .order("grade", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching classes:", error);
+        setError("Failed to fetch classes");
+      } else {
+        setClasses(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchClasses();
+  }, []);
 
   return (
     <div className="min-h-screen p-6   text-white font-poppins flex flex-col items-center">
-
-      <div className="w-full max-w-7xl  rounded-2xl shadow-2xl border border-gray-700 overflow-hidden">
+      <div className="w-full max-w-full  rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-[#12BBB6]/50 scrollbar-track-gray-900">
-          <table className="min-w-full table-auto border-collapse border border-gray-700">
+          <table
+            id="timetable"
+            className="min-w-full table-auto border-collapse border border-gray-700"
+          >
             {/* Table Header */}
             <thead className="bg-[#12BBB6] sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-4 text-left font-semibold uppercase tracking-wide border-r border-[#0c8a91]">
+                <th className="px-2 py-3 text-center font-semibold uppercase tracking-wide border-r border-[#0c8a91]">
                   Class
                 </th>
-                {schedule.map((p, idx) => (
-                  <th
-                    key={idx}
-                    className="px-6 py-4 text-center font-semibold uppercase tracking-wide border-r border-[#0c8a91] last:border-0"
-                  >
-                    Period {p.period}
-                  </th>
-                ))}
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => {
+                  return (
+                    <th
+                      key={item}
+                      className=" py-3 text-center font-semibold uppercase tracking-wide border-r border-[#0c8a91]"
+                    >
+                      Period {item}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
 
             {/* Table Body */}
             <tbody>
-              {classHeaders.map((cls, idx) => (
+              {classes?.map((cls, idx) => (
                 <tr
                   key={idx}
-                  className={`border-b border-gray-700  transition-colors duration-300 ${
-                    idx % 2 === 0 ? "bg-transparent" : "bg-white/10"
-                  }`}
+                  className={`border-b border-gray-700  transition-colors duration-300 bg-transparent`}
                 >
                   {/* Class Column */}
-                  <td className="px-6 py-4 bg-[#12BBB6] font-medium text-left text-white border-r border-gray-600">
-                    {cls}
+                  <td className="px-2 py-4  bg-white/10 backdrop-blur-sm font-medium text-left text-white border-r border-gray-600">
+                    {cls?.name}
                   </td>
-
-                  {/* Period Columns */}
-                  {schedule.map((p, idx2) => {
-                    const entry = p.entries.find(e => e.class === cls);
-                    const isPresent = attendance[cls][p.period];
-                    return (
-                      <td key={idx2} className="px-6 py-4 text-center border-r border-gray-600 last:border-0">
-                        {entry ? (
-                          <div className="flex flex-col items-center justify-center space-y-1">
-                            <span className="text-xs text-gray-200">{entry.teacher}</span>
-                            <motion.button
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => toggleAttendance(cls, p.period)}
-                              className={`relative w-12 h-6 rounded-full transition-colors duration-300 cursor-pointer ${
-                                isPresent ? "bg-white/20" : " bg-white/10"
-                              }`}
-                              title={isPresent ? "Present" : "Absent"}
-                            >
-                              {/* Circle indicator */}
-                              <motion.span
-                                layout
-                                className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
-                                animate={{
-                                  x: isPresent ? 24 : 0,
-                                  backgroundColor: isPresent ? "#10B981" : "#12BBB6",
-                                }}
-                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                              />
-                            </motion.button>
-                          </div>
-                        ) : (
-                          <span className="text-gray-500">—</span>
-                        )}
-                      </td>
-                    );
-                  })}
+                  {[1, 2, 3, 4, 5, 6, 7, 8]?.map(
+                    (period?: any, index?: number) => (
+                      <PeriodEditor
+                        period={period}
+                        clsData={cls}
+                        teachers={teachers}
+                        subjects={subjects}
+                        key={index}
+                      />
+                    )
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-    
+      {mainLoading && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+          <CircleLoading />
+        </div>
+      )}
     </div>
   );
 };
