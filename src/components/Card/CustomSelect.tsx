@@ -90,31 +90,31 @@ const CustomSelect = ({
 
   switch (position) {
     case "top":
-      positionClasses = "bottom-full mb-2 left-0";
+      positionClasses = "md:bottom-full md:mb-2 md:left-0";
       break;
     case "bottom":
-      positionClasses = "top-full mt-2 left-0";
+      positionClasses = "md:top-full md:mt-2 md:left-0";
       break;
     case "left":
-      positionClasses = "right-full mr-2 top-1/2 -translate-y-1/2";
+      positionClasses = "md:right-full md:mr-2 md:top-1/2 md:-translate-y-1/2";
       break;
     case "right":
-      positionClasses = "left-full ml-2 top-1/2 -translate-y-1/2";
+      positionClasses = "md:left-full md:ml-2 md:top-1/2 md:-translate-y-1/2";
       break;
     case "left-top":
-      positionClasses = "right-full mr-2 top-0";
+      positionClasses = "md:right-full md:mr-2 md:top-0";
       break;
     case "left-bottom":
-      positionClasses = "right-full mr-2 bottom-0";
+      positionClasses = "md:right-full md:mr-2 md:bottom-0";
       break;
     case "right-top":
-      positionClasses = "left-full ml-2 top-0";
+      positionClasses = "md:left-full md:ml-2 md:top-0";
       break;
     case "right-bottom":
-      positionClasses = "left-full ml-2 bottom-0";
+      positionClasses = "md:left-full md:ml-2 md:bottom-0";
       break;
     default:
-      positionClasses = "top-full mt-2 left-0";
+      positionClasses = "md:top-full md:mt-2 md:left-0";
   }
   return (
     <div ref={rootRef} className={`relative ${className}`}>
@@ -166,7 +166,7 @@ const CustomSelect = ({
 
       {/* Dropdown */}
       {open && (
-        <div className={`absolute z-[99999] ${positionClasses} w-full`}>
+        <div className={`absolute z-[99999] ${positionClasses} max-md:top-full max-md:mt-2 max-md:left-0 max-md:w-full`}>
           <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden">
             {/* Search */}
             <div className="p-2 border-b border-gray-800">
