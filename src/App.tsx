@@ -7,6 +7,7 @@ import Animated from "./components/common/Animated";
 import { Toaster } from "react-hot-toast";
 import FloatingSwitch from "./components/ui/FloatingSwitch";
 import Cookies from "js-cookie";
+import SingleEdit from "./pages/SingleEdit";
 function App() {
   const isVerified = Cookies.get("passwordVerified");
 
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Tables />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/single-edit" element={<SingleEdit />} />
         </Routes>
         <Toaster
           position="top-center"

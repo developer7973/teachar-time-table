@@ -21,6 +21,7 @@ function Header() {
   const navItems = [
     { title: "Tables", path: "/" },
     { title: "Dashboard", path: "/dashboard" },
+    { title: "Single Edit", path: "/single-edit" },
   ];
 
   return (
