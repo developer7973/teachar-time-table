@@ -262,6 +262,7 @@ function PeriodEditor({
 
                   <div className="flex-1">
                     <CustomSelect
+                      blurEffect={true}
                       value={schedule[index]?.teacher_id || ""}
                       onChange={(val) => handleTeacherChange(index, val)}
                       options={teachers.map((t) => ({
@@ -283,6 +284,7 @@ function PeriodEditor({
 
                   <div className="flex-1">
                     <CustomSelect
+                      blurEffect={true}
                       value={schedule[index]?.subject_id || ""}
                       onChange={(val) => handleSubjectChange(index, val)}
                       options={subjects.map((s) => ({
